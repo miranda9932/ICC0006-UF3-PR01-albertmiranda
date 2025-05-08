@@ -82,18 +82,10 @@ export class PreloaderScene extends Phaser.Scene {
     this.load.svg('laser', 'assets/game/images/laser.svg');
     this.load.svg('explosion', 'assets/game/images/explosion.svg');
     
-    // Crear audio vacío para que el juego no falle
-    this.createDummyAudio();
-  }
-  
-  createDummyAudio() {
-    // Crear sonidos temporales para que la aplicación funcione sin archivos de audio
-    this.createAudioContext();
-  }
-  
-  createAudioContext() {
-    // Añadir el contexto de audio a la escena para poder generar sonidos
-    this.game.registry.set('audioCtx', new (window.AudioContext || (window as any).webkitAudioContext)());
+    // Sonidos
+    this.load.audio('laserSound', 'assets/game/sounds/retro-laser-1-236669.mp3');
+    this.load.audio('explosionSound', 'assets/game/sounds/arcade-fx-288597.mp3');
+    this.load.audio('bgMusic', 'assets/game/sounds/arcade-fx-288597.mp3'); // Usamos el mismo para música de fondo
   }
   
   createAnimations() {

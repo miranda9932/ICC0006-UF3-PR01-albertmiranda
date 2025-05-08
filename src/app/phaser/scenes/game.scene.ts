@@ -20,7 +20,6 @@ export class GameScene extends Phaser.Scene {
   private backgroundMusic!: Phaser.Sound.BaseSound;
   private laserSound!: Phaser.Sound.BaseSound;
   private explosionSound!: Phaser.Sound.BaseSound;
-  private audioCtx: AudioContext | null = null;
   
   constructor() {
     super({ key: 'GameScene' });
@@ -30,10 +29,7 @@ export class GameScene extends Phaser.Scene {
     // Fondo
     this.add.image(0, 0, 'background').setOrigin(0).setDisplaySize(800, 600);
     
-    // Contexto de audio
-    this.audioCtx = this.game.registry.get('audioCtx') || null;
-    
-    // Configurar sonidos simulados
+    // Cargar y configurar sonidos
     this.setupSounds();
     
     // Configuración de física
@@ -42,7 +38,7 @@ export class GameScene extends Phaser.Scene {
     // Nave del jugador
     this.ship = this.physics.add.sprite(400, 550, 'ship');
     this.ship.setCollideWorldBounds(true);
-    this.ship.setSize(40, 40);
+    this.ship.setSize(40, 40); // Tamaño fijo en lugar de proporcional
     
     // Grupo de láseres
     this.lasers = this.physics.add.group({
@@ -50,6 +46,9 @@ export class GameScene extends Phaser.Scene {
       maxSize: 20,
       runChildUpdate: true
     });
+    
+    // No añadir colisiones entre la nave y sus láseres
+    // (No necesitamos deshabilitar colisiones explícitamente ya que no las hemos habilitado antes)
     
     // Grupo de asteroides
     this.asteroids = this.physics.add.group({
@@ -142,70 +141,19 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive().setVisible(false);
     
     this.backToMenuButton.on('pointerdown', () => {
+      this.backgroundMusic.stop();
       this.scene.start('MenuScene');
     });
   }
   
   setupSounds() {
-    // Crear objetos de sonido vacíos
-    this.backgroundMusic = {
-      play: () => {},
-      stop: () => {}
-    } as any;
+    // Cargar sonidos desde archivos
+    this.backgroundMusic = this.sound.add('bgMusic', { loop: true, volume: 0.3 });
+    this.laserSound = this.sound.add('laserSound', { volume: 0.4 });
+    this.explosionSound = this.sound.add('explosionSound', { volume: 0.5 });
     
-    this.laserSound = {
-      play: () => {
-        this.generateLaserSound();
-      }
-    } as any;
-    
-    this.explosionSound = {
-      play: () => {
-        this.generateExplosionSound();
-      }
-    } as any;
-  }
-  
-  generateLaserSound() {
-    if (!this.audioCtx) return;
-    
-    const duration = 0.2;
-    const oscillator = this.audioCtx.createOscillator();
-    const gainNode = this.audioCtx.createGain();
-    
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(880, this.audioCtx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(440, this.audioCtx.currentTime + duration);
-    
-    gainNode.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + duration);
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioCtx.destination);
-    
-    oscillator.start();
-    oscillator.stop(this.audioCtx.currentTime + duration);
-  }
-  
-  generateExplosionSound() {
-    if (!this.audioCtx) return;
-    
-    const duration = 0.5;
-    const oscillator = this.audioCtx.createOscillator();
-    const gainNode = this.audioCtx.createGain();
-    
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(100, this.audioCtx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(10, this.audioCtx.currentTime + duration);
-    
-    gainNode.gain.setValueAtTime(0.5, this.audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + duration);
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioCtx.destination);
-    
-    oscillator.start();
-    oscillator.stop(this.audioCtx.currentTime + duration);
+    // Iniciar música de fondo
+    this.backgroundMusic.play();
   }
   
   override update() {
@@ -424,6 +372,7 @@ export class GameScene extends Phaser.Scene {
       this.physics.pause();
       this.asteroidSpawnTimer.paused = true;
       this.pauseButton.setText('REANUDAR');
+      this.backgroundMusic.pause(); // Pausar música
     } else {
       // Reanudar el juego
       this.pauseText.setVisible(false);
@@ -431,6 +380,7 @@ export class GameScene extends Phaser.Scene {
       this.physics.resume();
       this.asteroidSpawnTimer.paused = false;
       this.pauseButton.setText('PAUSA');
+      this.backgroundMusic.resume(); // Reanudar música
     }
   }
   
@@ -467,5 +417,10 @@ export class GameScene extends Phaser.Scene {
     
     // Reanudar física
     this.physics.resume();
+    
+    // Asegurar que la música está sonando
+    if (!this.backgroundMusic.isPlaying) {
+      this.backgroundMusic.play();
+    }
   }
 } 
