@@ -148,11 +148,16 @@ export class GameScene extends Phaser.Scene {
   
   setupSounds() {
     // Cargar sonidos desde archivos
-    this.backgroundMusic = this.sound.add('bgMusic', { loop: true, volume: 0.3 });
     this.laserSound = this.sound.add('laserSound', { volume: 0.4 });
     this.explosionSound = this.sound.add('explosionSound', { volume: 0.5 });
     
-    // Iniciar música de fondo
+    // Configurar música de fondo
+    this.backgroundMusic = this.sound.add('bgMusic', { 
+      loop: true, 
+      volume: 0.3 
+    });
+    
+    // Iniciar la música de fondo
     this.backgroundMusic.play();
   }
   

@@ -85,7 +85,7 @@ export class PreloaderScene extends Phaser.Scene {
     // Sonidos
     this.load.audio('laserSound', 'assets/game/sounds/retro-laser-1-236669.mp3');
     this.load.audio('explosionSound', 'assets/game/sounds/arcade-fx-288597.mp3');
-    this.load.audio('bgMusic', 'assets/game/sounds/arcade-fx-288597.mp3'); // Usamos el mismo para música de fondo
+    this.load.audio('bgMusic', 'assets/game/sounds/game-music-loop-7-145285.mp3');
   }
   
   createAnimations() {
