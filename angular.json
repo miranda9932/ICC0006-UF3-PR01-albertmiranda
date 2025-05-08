@@ -19,6 +19,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "phaser"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -32,7 +35,9 @@
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
+            "scripts": [
+              "node_modules/phaser/dist/phaser.min.js"
+            ]
           },
           "configurations": {
             "production": {

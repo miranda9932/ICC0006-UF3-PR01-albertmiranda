@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PhaserService } from '../phaser/phaser.service';
 
 @Component({
   selector: 'app-home',
@@ -6,8 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
 
-  constructor() {}
+  constructor(private phaserService: PhaserService) {}
 
+  ngOnInit() {
+    this.phaserService.createGame();
+  }
+
+  ngOnDestroy() {
+    this.phaserService.destroyGame();
+  }
 }

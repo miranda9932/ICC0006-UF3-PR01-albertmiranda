@@ -18,11 +18,15 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "es2020",
+    "skipLibCheck": true,
     "lib": [
       "es2018", 
-      "dom"
+      "dom",
+      "es2015.collection",
+      "es2015.iterable"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
